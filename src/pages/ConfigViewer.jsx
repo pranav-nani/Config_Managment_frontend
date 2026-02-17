@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, CheckCircle, Download, Eye } from 'lucide-react';
-import ReactJson from 'react-json-view';
-import { configService } from '../services/configService';
-import { copyToClipboard, prettyPrintJSON } from '../utils/helpers';
-import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Copy, CheckCircle, Download, Eye } from "lucide-react";
+import ReactJson from "react-json-view";
+import { configService } from "../services/configService";
+import { copyToClipboard, prettyPrintJSON } from "../utils/helpers";
+import Loading from "../components/Loading";
+import { toast } from "react-toastify";
 
 const ConfigViewer = () => {
   const { configId } = useParams();
@@ -13,7 +13,7 @@ const ConfigViewer = () => {
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [viewMode, setViewMode] = useState('tree'); // 'tree' or 'raw'
+  const [viewMode, setViewMode] = useState("tree"); // 'tree' or 'raw'
 
   useEffect(() => {
     fetchConfig();
@@ -22,20 +22,14 @@ const ConfigViewer = () => {
   const fetchConfig = async () => {
     try {
       setLoading(true);
-      // This would need to be adjusted based on your actual API
-      // For now, we'll simulate getting config by ID
-      const response = await configService.getAllConfigs();
-      const foundConfig = response.find(c => c.id === parseInt(configId));
-      
-      if (foundConfig) {
-        setConfig(foundConfig);
-      } else {
-        toast.error('Configuration not found');
-        navigate('/services');
-      }
+      const data = await configService.getConfigById(configId);
+      setConfig({
+        ...data,
+        data: data.configData || {},
+      });
     } catch (error) {
-      toast.error('Failed to load configuration');
-      navigate('/services');
+      toast.error("Configuration not found");
+      navigate("/services");
     } finally {
       setLoading(false);
     }
@@ -44,28 +38,28 @@ const ConfigViewer = () => {
   const handleCopy = async () => {
     const jsonString = prettyPrintJSON(config.data);
     const success = await copyToClipboard(jsonString);
-    
+
     if (success) {
       setCopied(true);
-      toast.success('Configuration copied to clipboard!');
+      toast.success("Configuration copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } else {
-      toast.error('Failed to copy to clipboard');
+      toast.error("Failed to copy to clipboard");
     }
   };
 
   const handleDownload = () => {
     const jsonString = prettyPrintJSON(config.data);
-    const blob = new Blob([jsonString], { type: 'application/json' });
+    const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `${config.serviceName}-${config.environment}-v${config.version}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success('Configuration downloaded!');
+    toast.success("Configuration downloaded!");
   };
 
   if (loading) {
@@ -84,7 +78,7 @@ const ConfigViewer = () => {
           <ArrowLeft size={20} />
           Back
         </button>
-        
+
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -102,17 +96,17 @@ const ConfigViewer = () => {
               )}
             </div>
             <p className="text-dark-600">
-              Version {config.version} • Created {new Date(config.createdAt).toLocaleDateString()}
+              Version {config.version} • Created{" "}
+              {new Date(config.createdAt).toLocaleDateString()}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setViewMode(viewMode === 'tree' ? 'raw' : 'tree')}
-              className="btn btn-secondary"
-            >
+              onClick={() => setViewMode(viewMode === "tree" ? "raw" : "tree")}
+              className="btn btn-secondary">
               <Eye size={18} />
-              {viewMode === 'tree' ? 'Raw View' : 'Tree View'}
+              {viewMode === "tree" ? "Raw View" : "Tree View"}
             </button>
             <button onClick={handleCopy} className="btn btn-secondary">
               {copied ? (
@@ -140,11 +134,11 @@ const ConfigViewer = () => {
         <div className="card-header">
           <span>Configuration Data</span>
           <span className="text-sm font-normal text-dark-600">
-            {viewMode === 'tree' ? 'Tree View' : 'Raw JSON'}
+            {viewMode === "tree" ? "Tree View" : "Raw JSON"}
           </span>
         </div>
 
-        {viewMode === 'tree' ? (
+        {viewMode === "tree" ? (
           <div className="bg-dark-50 rounded-lg p-4 overflow-x-auto">
             <ReactJson
               src={config.data}
@@ -155,9 +149,9 @@ const ConfigViewer = () => {
               collapsed={2}
               name={false}
               style={{
-                backgroundColor: 'transparent',
-                fontSize: '14px',
-                fontFamily: 'JetBrains Mono, monospace',
+                backgroundColor: "transparent",
+                fontSize: "14px",
+                fontFamily: "JetBrains Mono, monospace",
               }}
             />
           </div>
@@ -173,12 +167,18 @@ const ConfigViewer = () => {
       {/* Metadata */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-600 mb-2">Service Name</h3>
-          <p className="text-lg font-semibold text-dark-900">{config.serviceName}</p>
+          <h3 className="text-sm font-semibold text-dark-600 mb-2">
+            Service Name
+          </h3>
+          <p className="text-lg font-semibold text-dark-900">
+            {config.serviceName}
+          </p>
         </div>
 
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-600 mb-2">Environment</h3>
+          <h3 className="text-sm font-semibold text-dark-600 mb-2">
+            Environment
+          </h3>
           <span className={`badge badge-${config.environment} text-base`}>
             {config.environment.toUpperCase()}
           </span>
@@ -186,18 +186,23 @@ const ConfigViewer = () => {
 
         <div className="card">
           <h3 className="text-sm font-semibold text-dark-600 mb-2">Version</h3>
-          <p className="text-lg font-semibold text-dark-900 font-mono">v{config.version}</p>
+          <p className="text-lg font-semibold text-dark-900 font-mono">
+            v{config.version}
+          </p>
         </div>
 
         <div className="card">
           <h3 className="text-sm font-semibold text-dark-600 mb-2">Status</h3>
-          <span className={`badge ${config.isActive ? 'badge-active' : 'badge-inactive'} text-base`}>
-            {config.isActive ? 'Active' : 'Inactive'}
+          <span
+            className={`badge ${config.isActive ? "badge-active" : "badge-inactive"} text-base`}>
+            {config.isActive ? "Active" : "Inactive"}
           </span>
         </div>
 
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-600 mb-2">Created At</h3>
+          <h3 className="text-sm font-semibold text-dark-600 mb-2">
+            Created At
+          </h3>
           <p className="text-sm text-dark-900">
             {new Date(config.createdAt).toLocaleString()}
           </p>
@@ -205,7 +210,9 @@ const ConfigViewer = () => {
 
         {config.createdBy && (
           <div className="card">
-            <h3 className="text-sm font-semibold text-dark-600 mb-2">Created By</h3>
+            <h3 className="text-sm font-semibold text-dark-600 mb-2">
+              Created By
+            </h3>
             <p className="text-sm text-dark-900">{config.createdBy}</p>
           </div>
         )}

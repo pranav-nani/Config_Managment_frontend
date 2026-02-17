@@ -42,26 +42,6 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-  // const login = async (email, password) => {
-  //   setLoading(true);
-
-  //   // SIMULATE API DELAY
-  //   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //   // MOCK VALIDATION
-  //   if (email === "admin@example.com" && password === "admin123") {
-  //     const mockUser = { id: 1, name: "Admin User", email };
-  //     const mockToken = "fake-jwt-token";
-
-  //     localStorage.setItem("token", mockToken);
-  //     localStorage.setItem("user", JSON.stringify(mockUser));
-  //     setUser(mockUser);
-
-  //     return { success: true };
-  //   } else {
-  //     return { success: false, error: "Invalid email or password" };
-  //   }
-  // };
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");

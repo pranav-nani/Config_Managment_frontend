@@ -46,6 +46,11 @@ export const configService = {
     const response = await api.get('/configs/stats');
     return response.data;
   },
+  // configService.js
+  getConfigById: async (id) => {
+    const response = await api.get(`/configs/${id}`);
+    return response.data;
+  }
 };
 
 export const authService = {

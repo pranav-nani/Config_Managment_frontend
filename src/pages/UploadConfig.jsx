@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, FileJson, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { configService } from '../services/configService';
+import {useAuth} from '../contexts/AuthContext';
 import { parseConfigFile, prettyPrintJSON } from '../utils/helpers';
 import { toast } from 'react-toastify';
 
 const UploadConfig = () => {
   const navigate = useNavigate();
+  const {user} = useAuth();
   const [formData, setFormData] = useState({
     serviceName: '',
     environment: 'dev',
+    createdBy:''
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -55,6 +58,9 @@ const UploadConfig = () => {
       uploadData.append('file', file);
       uploadData.append('serviceName', formData.serviceName);
       uploadData.append('environment', formData.environment);
+
+      const creator = user?.email || 'unknown';
+      uploadData.append('createdBy', creator);
 
       await configService.uploadConfig(uploadData);
       toast.success('Configuration uploaded successfully!');
