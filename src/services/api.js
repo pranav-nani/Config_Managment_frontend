@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 // Base API URL - update this to your backend URL
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://config-backend-latest.onrender.com/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
