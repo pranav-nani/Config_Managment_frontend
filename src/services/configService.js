@@ -58,4 +58,13 @@ export const authService = {
     const response = await api.post('/auth/login', { email, password });
     return response.data;
   },
+
+  signup: async (name, email, password) => {
+    const response = await api.post('/auth/saveUser', {
+      name,
+      email,
+      password
+    });
+    return response.data;
+  },
 };

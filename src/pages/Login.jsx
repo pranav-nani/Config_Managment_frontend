@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LogIn, Mail, Lock, Settings } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { LogIn, Mail, Lock, Settings } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ const Login = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        toast.success('Welcome back!');
-        navigate('/dashboard');
+        toast.success("Welcome back!");
+        navigate("/dashboard");
       } else {
         toast.error(result.error);
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error("An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-primary-100/30 -z-10" />
-      
+
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/30 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl -z-10" />
@@ -87,8 +87,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full py-3 text-base"
-            >
+              className="btn btn-primary w-full py-3 text-base">
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -103,9 +102,32 @@ const Login = () => {
             </button>
           </form>
 
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-dark-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-dark-500">
+                Don't have an account?
+              </span>
+            </div>
+          </div>
+
+          {/* Signup Link */}
+          <Link
+            to="/signup"
+            className="block text-center text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            Create a new account
+          </Link>
+
           <div className="mt-6 pt-6 border-t border-dark-100 text-center">
             <p className="text-sm text-dark-600">
-              Demo credentials: <span className="font-mono text-primary-600">admin@example.com</span> / <span className="font-mono text-primary-600">admin123</span>
+              Demo credentials:{" "}
+              <span className="font-mono text-primary-600">
+                admin@example.com
+              </span>{" "}
+              / <span className="font-mono text-primary-600">admin123</span>
             </p>
           </div>
         </div>
